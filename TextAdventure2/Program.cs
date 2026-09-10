@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices.JavaScript;
+using System.Collections.Generic;
 
 namespace TextAdventure2;
 
@@ -24,6 +24,12 @@ public class Game{
             {
                 continue;
             }
+            else if (response == "quit") //NOT IMPLEMENTED
+            {
+                throw new NotImplementedException("");
+                int[] arr = new int[1];
+                arr[1] = 0;
+            }
             else
             {
                 return response;
@@ -32,7 +38,9 @@ public class Game{
     }
     public void PressToContinue()
     {
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.WriteLine("Press any key to continue...");
+        Console.ResetColor();
         Console.ReadKey();
         Console.Clear();
     }
@@ -56,9 +64,9 @@ public class Game{
             for (int i = 0; i < choises.Length; i++)
             {
                 int.TryParse(answer, out int number); //number is 0 if parsing fails, valid options are 1 and above
-                if (choises[i] == answer || number == i+1)
+                if (choises[i].ToLower() == answer || number == i+1)
                 {
-                    Console.WriteLine($"You choose {answer}.");
+                    Console.WriteLine($"You choose {choises[i]}.");
                     return choises[i];
                 }
             }
@@ -217,18 +225,49 @@ public class Game{
             }
             else
             {
-                Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckly fails");
+                Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckily fails");
             }
         }
         else
         {
 
         }
+        PressToContinue();
+
+        Console.WriteLine("While you traverse the scraggy shrubland,\n" +
+                          "you are hit by occasional gusts of gray wind,\n" +
+                          /*"Rarely they may carry a sliver of straw, sticking to your clothes for a brief moment\n"+
+                          "before reuniting with the flow of the wind in your opposite direction."+*/
+                          "stricken by the beauty of the landscape as it may have once been,\n" +
+                          "increasingly annoyed by the decision of five pebbles and a sliver of straw massaging your feet.\n" +
+                          "But you are not hurt, as the experience of the shrubland is not dangerous. Not yet...");
+        PressToContinue();
+        Console.WriteLine("Do you feel like tripping on a rock?");
+        AskChoise(new string[]{"yes"});
+        int dieRoll = DnDice();
+        if (dieRoll == 0)
+        {
+            Console.WriteLine("The ground seems sparse in rocks and you give up the search. Maybe a rock will find you instead some time.");
+        }
+        else if (dieRoll == 6)
+        {
+            Console.WriteLine("You feel a sense of your knees and palms staring at you in disappointment.\n" +
+                              "What are you trying to do? Offer yourself to the shrubs?\n" +
+                              "They are not as round as the landscape when you see them from within.\n" +
+                              "Your jurney will continue, but at the cost of 6 health points.");
+            character.Health -= dieRoll;
+        }
+        else
+        {
+            Console.WriteLine($"A satisfactory tripping is experienced. Your physical health is degraded by a factor of {dieRoll}.");
+            character.Health -= dieRoll;
+        }
+        PressToContinue();
+        character.Location = "Elders Recess";
     }
     public void EldersRecess()
     {
         Monsters Bat = new Monsters("bat", 10, 10);
-        
         FightEvent(Bat);
     }
 
@@ -245,9 +284,13 @@ public class Game{
     {
         Console.WriteLine(
             $"Welcome to a fight event! \n you are fighting a {monster.Name} with {monster.Health} health.\n" +
-            $"{monster.Name} is exited to hurt you with damage {monster.Damage}.");
+            $"{monster.Name} is exited to hurt you with basedamage of {monster.Damage}.");
         while (monster.Health > 0) //rounds
         {
+            Console.Clear();
+            Console.WriteLine($"{character.Name} health: {character.Health}");
+            Console.WriteLine($"{monster.Name} health: {monster.Health}");
+
             //player turn
             switch (AskChoise(new string[] { "attack", "run", "do a flip" }))
             {
@@ -306,6 +349,7 @@ public class Game{
                 Console.WriteLine("You died.");
                 return false;
             }
+            PressToContinue(); //detta är längst ned i while
         }
 
         return true; //cause error, need change
