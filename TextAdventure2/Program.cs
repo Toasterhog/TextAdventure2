@@ -115,6 +115,15 @@ public class Game{
             else if (character.Location == "Elders Recess")
             {
                 EldersRecess();
+            }else if (character.Location == "Win")
+            {
+                Win();
+            }else if (character.Location == "Loose")
+            {
+                Loose();
+            }else if (character.Location == "GameOver")
+            {
+                GameOver();
             }else 
             {
                 Console.Error.Write($"{character.Location} is not implemented!");
@@ -330,14 +339,26 @@ public class Game{
     {
         Console.WriteLine($"You won {character.Name}.");
         PressToContinue();
-        character.Location = "End";
+        character.Location = "Game Over";
     }
 
-    public void Lose()
+    public void Loose()
     {
         Console.WriteLine($"You lost {character.Name}.");
         PressToContinue();
-        character.Location = "End";
+        character.Location = "Game Over";
+    }
+
+    public void GameOver()
+    {
+        Console.WriteLine($"The Adventure is over. Do you want to play again?");
+        bool yesido = AskYesOrNo();
+        if (yesido)
+        {
+            character.Location = "StartingArea";
+            return;
+        }
+        character.Location = "Quit";
     }
 
     #endregion Rooms
