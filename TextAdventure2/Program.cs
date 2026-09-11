@@ -331,8 +331,19 @@ public class Game{
     }
     public void EldersRecess()
     {
-        Monsters Bat = new Monsters("bat", 10, 10);
-        FightEvent(Bat);
+        Console.Clear();
+        Console.WriteLine("You decide to keep moving on. After walking for a while you find yourself in an a vulcanous area with ranges of elevated terrain.\n"+
+                          "After exploring for a while you find yourself in a huge cave with an entrance for the sun to shine in, while looking around you also notice\n" + 
+                          "a sharp glare from the suns vibrant rays bouncing of gigantic crystals. After wandering around you hear something\n"+
+                          "or rather somethings presence in the cave. Then you notice it.. and it notices you... a large dragon, around 4 meters in height, and atleast 24 meters in lenght\n" +
+                          "The dragon starts to circle around you, it walks slowly around you, holding an elegant stance almost like a Queen waiting for a moment to strike\n"+
+                          "The dragon reveals itself and, its sleek, icy-blue body shimmering like frozen crystal, \n" +
+                          "crowned by elegant swept-back horns and adorned with long, blade-like ice spines along its neck, wings, and tail.\n" +
+                          $"It is time {character.Name} it's time to get monster hunting.");
+                          PressToContinue();
+                          Console.Clear();
+        Monsters Velkhana = new Monsters("Velkhana", 100, 5);
+        FightEvent(Velkhana);
     }
 
     public void Win()

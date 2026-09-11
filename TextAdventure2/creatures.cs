@@ -97,7 +97,7 @@ public class Monsters
     public bool Attack(Character characterBeingAttacked)
     {
         int dieRoll = Game.DnDice();
-        int damage_dealing = GetDamage() + dieRoll == 6 ? 1 : 0;
+        int damage_dealing = GetDamage();
         if (dieRoll > 3)
         {   
             Console.WriteLine($"The monster hit you for{damage_dealing}!");
