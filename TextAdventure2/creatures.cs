@@ -17,6 +17,10 @@ public class Character
         {
             damage += 2;
         }
+        else if (Inventory.Contains("cactus"))
+        {
+            damage -= 1;
+        }
         else if (Inventory.Contains("shining sword"))
         {
             damage += 7;

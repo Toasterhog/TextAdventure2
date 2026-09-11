@@ -7,7 +7,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
         Game GameInstance = new Game();
         GameInstance.GameStart();
     }
@@ -109,6 +108,10 @@ public class Game{
             {
                 MountainPeak();
             }
+            else if (character.Location == "Shrublands")
+            {
+                ShrubLands();
+            }
             else if (character.Location == "Elders Recess")
             {
                 EldersRecess();
@@ -194,7 +197,8 @@ public class Game{
         }
         else
         {
-            
+            Console.WriteLine("So you dont want the shining sword??");
+            Console.WriteLine($"This was your choice {character.Name}");
         }
         character.RemoveItemFromInventory("key");
         
@@ -215,13 +219,18 @@ public class Game{
         string approach = AskChoise(new string[] { "Approach", "Walk Away" });
         if (approach == "Approach")
         {
-            if (DnDice() >= 3)
+            if (DnDice() >= 2 && DnDice() <= 5)
             {
                 Console.WriteLine("You picked up the shiny item");
                 Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
                                   "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
                                   "It damages mobs and destroys minecarts and dropped items that touch it.");
-                character.AddItemToInventory("cactus");
+                character.AddItemToInventory("cactus"); // Bad item eller cursed item
+            }
+            else if (DnDice() > 5)
+            {
+                Console.WriteLine("You just got a lot luckier than you think.\n" +
+                                  "You have picked up a Charge Blade that was left beside t he monster");
             }
             else
             {
@@ -230,10 +239,37 @@ public class Game{
         }
         else
         {
-
+            Console.WriteLine("So you see that it's perfectly safe loot, buy you chose to just ignore it??\n"+
+                              "Come on what kind of devs are we if we just let you walk away from perfectly safe treasure.\n"+
+                              "It's just a dead Anjanath, go ahead and take the glistening item no-one will see it.");
+            string approach2 = AskChoise( new string[] { "Try Approaching the Anjanath", "Walk Away" }); 
+            if (DnDice() >= 2 && DnDice() <= 5)
+            {
+                Console.WriteLine("You picked up the shiny item");
+                Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
+                                  "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
+                                  "It damages mobs and destroys minecarts and dropped items that touch it.");
+                character.AddItemToInventory("cactus"); // Bad item eller cursed item
+            }
+            else if (DnDice() > 5)
+            {
+                character.AddItemToInventory("charge blade");
+                Console.WriteLine("You just got a lot luckier than you think.\n" +
+                                  "You have picked up a Charge Blade that was left beside the monster");
+               
+            }
+            else
+            {
+                Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckily fails anyway so just leave...");
+                character.Location = "Shrublands";
+            }
         }
         PressToContinue();
+    }
 
+    public void ShrubLands()
+    {
+        Console.WriteLine("After the encounter with the dead Anjanath, you chose to continue your path and you find yourself in the Scrublands.");
         Console.WriteLine("While you traverse the scraggy shrubland,\n" +
                           "you are hit by occasional gusts of gray wind,\n" +
                           /*"Rarely they may carry a sliver of straw, sticking to your clothes for a brief moment\n"+
@@ -277,6 +313,7 @@ public class Game{
     {
         Random random = new Random();
         int roll = random.Next(1, 6);
+        Console.WriteLine($"The dice rolls!"); 
         return roll;
     }
 
@@ -328,13 +365,11 @@ public class Game{
                 default:
                     break;
             }
-
             if (monster.Health <= 0)
             {
                 Console.WriteLine($"You have killed {monster.Name}.");
                 return true;
             }
-
             //monster turn
             int monsterDieRoll = DnDice();
             if (monsterDieRoll >= 3)
@@ -345,7 +380,6 @@ public class Game{
             {
                 Console.WriteLine("monster does smt else than attack.");
             }
-
             if (character.Health <= 0)
             {
                 Console.WriteLine("You died.");
@@ -353,10 +387,7 @@ public class Game{
             }
             PressToContinue(); //detta är längst ned i while
         }
-
         return true; //cause error, need change
     }
-
-  
 }
     
