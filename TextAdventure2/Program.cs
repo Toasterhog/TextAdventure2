@@ -300,11 +300,7 @@ public class Game{
         Console.WriteLine("Do you feel like tripping on a rock?");
         AskChoise(new string[]{"yes"});
         int dieRoll = DnDice();
-        if (dieRoll == 0)
-        {
-            Console.WriteLine("The ground seems sparse in rocks and you give up the search. Maybe a rock will find you instead some time.");
-        }
-        else if (dieRoll == 6)
+        if (dieRoll == 6)
         {
             Console.WriteLine("You feel a sense of your knees and palms staring at you in disappointment.\n" +
                               "What are you trying to do? Offer yourself to the shrubs?\n" +
@@ -322,10 +318,20 @@ public class Game{
     }
     public void EldersRecess()
     {
-        Monsters Bat = new Monsters("bat", 10, 10);
-        FightEvent(Bat);
+        Console.Clear();
+        Console.WriteLine("You decide to keep moving on. After walking for a while you find yourself in an a vulcanous area with ranges of elevated terrain.\n"+
+                          "After exploring for a while you find yourself in a huge cave with an entrance for the sun to shine in, while looking around you also notice\n" + 
+                          "a sharp glare from the suns vibrant rays bouncing of gigantic crystals. After wandering around you hear something\n"+
+                          "or rather somethings presence in the cave. Then you notice it.. and it notices you... a large dragon, around 4 meters in height, and atleast 24 meters in lenght\n" +
+                          "The dragon starts to circle around you, it walks slowly around you, holding an elegant stance almost like a Queen waiting for a moment to strike\n"+
+                          "The dragon reveals itself and, its sleek, icy-blue body shimmering like frozen crystal, \n" +
+                          "crowned by elegant swept-back horns and adorned with long, blade-like ice spines along its neck, wings, and tail.\n" +
+                          $"It is time {character.Name} it's time to get monster hunting.");
+                          PressToContinue();
+                          Console.Clear();
+        Monsters Velkhana = new Monsters("Velkhana", 100, 5);
+        FightEvent(Velkhana);
     }
-
     #endregion Rooms
 
     public static int DnDice()
