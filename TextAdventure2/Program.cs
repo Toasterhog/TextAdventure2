@@ -189,7 +189,7 @@ public class Game{
                           "The wall opens up to a deep path down into the deep cave, you slowly take the steps down into the darkness when you find\n"+
                           "a shining sword ");
         Console.WriteLine("Do you wish to pick up the shining sword and leave your current weapon");
-        string weaponchoice = AskChoise(new string[] { "Pick up the sword.", "Leave the sword and keep the wood sword." });
+        string weaponchoice = AskChoise(new string[] { "Pick up the sword", "Leave the sword and keep the wood sword." });
         if (weaponchoice == "Pick up the sword")
         {
             character.RemoveItemFromInventory("wood sword");
@@ -219,22 +219,32 @@ public class Game{
         string approach = AskChoise(new string[] { "Approach", "Walk Away" });
         if (approach == "Approach")
         {
-            if (DnDice() >= 2 && DnDice() <= 5)
+            int rolling = DnDice();
+            if (rolling >= 2 && rolling <= 5)
             {
+                Console.Clear();
                 Console.WriteLine("You picked up the shiny item");
                 Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
                                   "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
                                   "It damages mobs and destroys minecarts and dropped items that touch it.");
                 character.AddItemToInventory("cactus"); // Bad item eller cursed item
+                Console.WriteLine("You move on..");
+                character.Location = "Shrublands";
             }
-            else if (DnDice() > 5)
+            else if (rolling > 5)
             {
+                Console.Clear();
                 Console.WriteLine("You just got a lot luckier than you think.\n" +
-                                  "You have picked up a Charge Blade that was left beside t he monster");
+                                  "You have picked up a Charge Blade that was left beside the monster");
+                Console.WriteLine("You move on..");
+                character.Location = "Shrublands";
             }
             else
             {
+                Console.Clear();
                 Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckily fails");
+                Console.WriteLine("You move on..");
+                character.Location = "Shrublands";
             }
         }
         else
@@ -242,25 +252,34 @@ public class Game{
             Console.WriteLine("So you see that it's perfectly safe loot, buy you chose to just ignore it??\n"+
                               "Come on what kind of devs are we if we just let you walk away from perfectly safe treasure.\n"+
                               "It's just a dead Anjanath, go ahead and take the glistening item no-one will see it.");
-            string approach2 = AskChoise( new string[] { "Try Approaching the Anjanath", "Walk Away" }); 
-            if (DnDice() >= 2 && DnDice() <= 5)
+            string approach2 = AskChoise( new string[] { "Try Approaching the Anjanath", "Walk Away" });
+            int rolling = DnDice();
+            if (rolling >= 2 && rolling <= 5)
             {
+                Console.Clear();
                 Console.WriteLine("You picked up the shiny item");
                 Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
                                   "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
                                   "It damages mobs and destroys minecarts and dropped items that touch it.");
                 character.AddItemToInventory("cactus"); // Bad item eller cursed item
+                Console.WriteLine("You move on..");
+                character.Location = "Shrublands";
             }
-            else if (DnDice() > 5)
+            else if (rolling > 5)
             {
+                Console.Clear();
                 character.AddItemToInventory("charge blade");
                 Console.WriteLine("You just got a lot luckier than you think.\n" +
                                   "You have picked up a Charge Blade that was left beside the monster");
+                Console.WriteLine("You move on..");
+                character.Location = "Shrublands";
                
             }
             else
             {
+                Console.Clear();
                 Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckily fails anyway so just leave...");
+                Console.WriteLine("You move on..");
                 character.Location = "Shrublands";
             }
         }
@@ -313,7 +332,7 @@ public class Game{
     {
         Random random = new Random();
         int roll = random.Next(1, 6);
-        Console.WriteLine($"The dice rolls!"); 
+        Console.WriteLine($"The dice rolls! {roll}"); 
         return roll;
     }
 
