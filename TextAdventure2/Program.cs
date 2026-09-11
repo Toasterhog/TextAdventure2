@@ -115,6 +115,15 @@ public class Game{
             else if (character.Location == "Elders Recess")
             {
                 EldersRecess();
+            }else if (character.Location == "Win")
+            {
+                Win();
+            }else if (character.Location == "Loose")
+            {
+                Loose();
+            }else if (character.Location == "GameOver")
+            {
+                GameOver();
             }else 
             {
                 Console.Error.Write($"{character.Location} is not implemented!");
@@ -300,7 +309,11 @@ public class Game{
         Console.WriteLine("Do you feel like tripping on a rock?");
         AskChoise(new string[]{"yes"});
         int dieRoll = DnDice();
-        if (dieRoll == 6)
+        if (dieRoll <= 2)
+        {
+            Console.WriteLine("The ground seems sparse in rocks and you give up the search. Maybe a rock will find you instead some time.");
+        }
+        else if (dieRoll == 6)
         {
             Console.WriteLine("You feel a sense of your knees and palms staring at you in disappointment.\n" +
                               "What are you trying to do? Offer yourself to the shrubs?\n" +
@@ -332,6 +345,33 @@ public class Game{
         Monsters Velkhana = new Monsters("Velkhana", 100, 5);
         FightEvent(Velkhana);
     }
+
+    public void Win()
+    {
+        Console.WriteLine($"You won {character.Name}.");
+        PressToContinue();
+        character.Location = "Game Over";
+    }
+
+    public void Loose()
+    {
+        Console.WriteLine($"You lost {character.Name}.");
+        PressToContinue();
+        character.Location = "Game Over";
+    }
+
+    public void GameOver()
+    {
+        Console.WriteLine($"The Adventure is over. Do you want to play again?");
+        bool yesido = AskYesOrNo();
+        if (yesido)
+        {
+            character.Location = "StartingArea";
+            return;
+        }
+        character.Location = "Quit";
+    }
+
     #endregion Rooms
 
     public static int DnDice()
@@ -361,7 +401,7 @@ public class Game{
                     int damage_dealing = character.GetDamage();
                     Console.WriteLine(
                         $"You suddenly, forcefully, with no respect of the well being of the {monster.Name}, \n attack it with a strength that in die terms is equivalent to {damage_dealing}.");
-                    monster.Hurt(damage_dealing);
+                    character.Attack(monster);
                     Console.WriteLine($"monster health is now {monster.Health}.");
                     if (monster.Health <= 0)
                     {
