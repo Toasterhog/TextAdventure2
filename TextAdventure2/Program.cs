@@ -281,7 +281,7 @@ public class Game{
         Console.WriteLine("Do you feel like tripping on a rock?");
         AskChoise(new string[]{"yes"});
         int dieRoll = DnDice();
-        if (dieRoll == 0)
+        if (dieRoll <= 2)
         {
             Console.WriteLine("The ground seems sparse in rocks and you give up the search. Maybe a rock will find you instead some time.");
         }
@@ -305,6 +305,20 @@ public class Game{
     {
         Monsters Bat = new Monsters("bat", 10, 10);
         FightEvent(Bat);
+    }
+
+    public void Win()
+    {
+        Console.WriteLine($"You won {character.Name}.");
+        PressToContinue();
+        character.Location = "End";
+    }
+
+    public void Lose()
+    {
+        Console.WriteLine($"You lost {character.Name}.");
+        PressToContinue();
+        character.Location = "End";
     }
 
     #endregion Rooms
@@ -336,7 +350,7 @@ public class Game{
                     int damage_dealing = character.GetDamage();
                     Console.WriteLine(
                         $"You suddenly, forcefully, with no respect of the well being of the {monster.Name}, \n attack it with a strength that in die terms is equivalent to {damage_dealing}.");
-                    monster.Hurt(damage_dealing);
+                    character.Attack(monster);
                     Console.WriteLine($"monster health is now {monster.Health}.");
                     if (monster.Health <= 0)
                     {
