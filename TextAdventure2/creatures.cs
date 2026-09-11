@@ -23,12 +23,27 @@ public class Character
         }
         return damage;
     }
+    public void Hurt(int damage)
+    {
+        Health -= damage;
+        Health = Math.Max(0, Health);
+        Console.WriteLine($"{Name} health: {Health}");
+        if (Health <= 0) { Die(); }
+    }
 
+    public void Die()
+    {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(("You Died"));
+        Console.ResetColor();
+        Location = "Debatable";
+    }
     public bool Attack(Monsters monsterBeingAttacked)
     {
         int damage_dealing = GetDamage();
         Console.WriteLine($"You suddenly, forcfully, with no respect of the well being of the {monsterBeingAttacked.Name}, \n attack it with a strength that in die terms is equivalent to {damage_dealing}.");
-        monsterBeingAttacked.Health -= damage_dealing;
+        monsterBeingAttacked.Hurt(damage_dealing);
         Console.WriteLine($"monster health is now {monsterBeingAttacked.Health}.");
         return true;//not imp
     }
@@ -58,13 +73,31 @@ public class Monsters
     }
     public int GetDamage()
     {
-        return Game.DnDice();
+        return Damage;
     }
+    public void Hurt(int damage)
+    {
+        Health -= damage;
+        Health = Math.Max(0, Health);
+        Console.WriteLine($"{Name} health: {Health}");
+        if (Health <= 0) { Die(); }
+    }
+
+    public void Die()
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(($"{Name} Died"));
+        Console.ResetColor();
+    }
+
     public bool Attack(Character characterBeingAttacked)
     {
-        if (Game.DnDice() > 3)
+        int dieRoll = Game.DnDice();
+        int damage_dealing = GetDamage() + dieRoll == 6 ? 1 : 0;
+        if (dieRoll > 3)
         {   
-            Console.WriteLine($"The monster hit you for{Damage}!");
+            Console.WriteLine($"The monster hit you for{damage_dealing}!");
+            characterBeingAttacked.Hurt(damage_dealing);
             return true;
         }
         else

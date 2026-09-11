@@ -299,7 +299,7 @@ public class Game{
                     int damage_dealing = character.GetDamage();
                     Console.WriteLine(
                         $"You suddenly, forcefully, with no respect of the well being of the {monster.Name}, \n attack it with a strength that in die terms is equivalent to {damage_dealing}.");
-                    monster.Health -= damage_dealing;
+                    monster.Hurt(damage_dealing);
                     Console.WriteLine($"monster health is now {monster.Health}.");
                     if (monster.Health <= 0)
                     {
@@ -319,10 +319,12 @@ public class Game{
                     else
                     {
                         Console.WriteLine(
-                            "You land head first on the ground. You feel the weight of your body consentrat at your neck, forming a small insignificant crack in your spie.\n" +
-                            " Sound of thin metal colliding with ground is heard, it's your coffee thermos. You cannot live without coffee.");
-                        return false;
+                            "You land head first on the ground. You feel the weight of your body concentrate at your neck, forming a small insignificant crack in your spine.\n" +
+                            "Sound of thin metal colliding with ground is heard, it's your coffee thermos. You cannot live without coffee.\n"+
+                            "One bit of emotional damage is taken.");
+                        character.Hurt(1);
                     }
+                    break;
                 default:
                     break;
             }
