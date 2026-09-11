@@ -2,11 +2,11 @@ namespace TextAdventure2;
 public class Character
 {
     public string Name;
-    public int Health = 100;
+    public int Health = 50;
     public List<string> Inventory = new List<string>();
     public string Location = "StartingArea";
 
-    public int GetDamage()
+    public int GetCharacterDamage()
     {
         int damage = 1; //fist idk
         if (Inventory.Contains("knife"))
@@ -17,57 +17,74 @@ public class Character
         {
             damage += 2;
         }
-        else if (Inventory.Contains("cactus"))
-        {
-            damage -= 1;
-        }
         else if (Inventory.Contains("shining sword"))
         {
             damage += 7;
         }
+        if (Inventory.Contains("charge blade"))
+        {
+            damage += 3;
+        }
+        if (Inventory.Contains("cactus"))
+        {
+            damage--;
+        }
         return damage;
     }
-    public void Hurt(int damage)
+
+    public void PrintInv()
     {
-        Health -= damage;
-        Health = Math.Max(0, Health);
-        Console.WriteLine($"{Name} health: {Health}");
-        if (Health <= 0) { Die(); }
+        Console.Write("Inventory contents:");
+        if(Inventory.Count > 0) Console.Write(" | ");
+        foreach (string item in Inventory)
+        {
+            Game.WriteColor(item, ConsoleColor.Blue);
+            Console.Write(" | ");
+        }
+        
+        Console.Write($"\n{Name} health: ");
+        Game.WriteColor($"{Health}", ConsoleColor.Red);
+        Console.Write("  Current damage: ");
+        Game.WriteColor($"{GetCharacterDamage()}\n",ConsoleColor.DarkBlue);
     }
 
-    public void Die()
-    {
-        Console.Clear();
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(("You Died"));
-        Console.ResetColor();
-        Location = "Debatable";
-    }
     public bool Attack(Monsters monsterBeingAttacked)
     {
-        int damage_dealing = GetDamage();
-        Console.WriteLine($"You suddenly, forcfully, with no respect of the well being of the {monsterBeingAttacked.Name}, \n attack it with a strength that in die terms is equivalent to {damage_dealing}.");
-        monsterBeingAttacked.Hurt(damage_dealing);
-        Console.WriteLine($"monster health is now {monsterBeingAttacked.Health}.");
-        return true;//not imp
+        int damage_dealing = GetCharacterDamage();
+        if (Game.DnDice() >= 5)
+        {
+        Console.WriteLine($"You suddenly, forcefully, with no respect or sympathy for the {monsterBeingAttacked.Name}, \n" +
+                          $"attack it with a strength of {damage_dealing}.");
+        }
+        else
+        {
+            Console.WriteLine($"You attack with strength {damage_dealing}");
+        }
+        monsterBeingAttacked.Health -= damage_dealing;
+        //Console.WriteLine($"{monsterBeingAttacked.Name} health is now {monsterBeingAttacked.Health}.");
+        return true;
     }
 
     public void AddItemToInventory(string itemToAdd)
     {
         Inventory.Add(itemToAdd);
-        Console.WriteLine($"You picked up {itemToAdd}.");
+        Console.Write($"You picked up ");
+        Game.WriteColor($"{itemToAdd}",ConsoleColor.Blue);
+        Console.WriteLine(".");
     }
     public void RemoveItemFromInventory(string itemToRemove)
     {
         Inventory.Remove(itemToRemove);
-        Console.WriteLine($"You dropped the {itemToRemove}");
+        Console.Write($"You dropped or used the ");
+        Game.WriteColor($"{itemToRemove}",ConsoleColor.Blue);
+        Console.WriteLine(".");
     }
 }
 public class Monsters
 {
-    public int Health = 100;
+    public int Health = 20;
     public string Name;
-    public int Damage = 10;  
+    public int Damage = 5;  
 
     public Monsters(string name, int health, int damage)
     {
@@ -75,38 +92,21 @@ public class Monsters
         Health = health;
         Damage = damage;
     }
-    public int GetDamage()
+    public int GetMonsterDamage()
     {
         return Damage;
     }
-    public void Hurt(int damage)
-    {
-        Health -= damage;
-        Health = Math.Max(0, Health);
-        Console.WriteLine($"{Name} health: {Health}");
-        if (Health <= 0) { Die(); }
-    }
-
-    public void Die()
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(($"{Name} Died"));
-        Console.ResetColor();
-    }
-
     public bool Attack(Character characterBeingAttacked)
     {
-        int dieRoll = Game.DnDice();
-        int damage_dealing = GetDamage();
-        if (dieRoll > 3)
+        if (Game.DnDice() > 1)
         {   
-            Console.WriteLine($"The monster hit you for{damage_dealing}!");
-            characterBeingAttacked.Hurt(damage_dealing);
+            Console.WriteLine($"The {Name} hit you for {Damage}!");
+            characterBeingAttacked.Health -= GetMonsterDamage();
             return true;
         }
         else
         {
-            Console.WriteLine("The monster attempted to attack you, but it missed.");
+            Console.WriteLine($"The {Name} attempted to attack you, but it missed.");
             return false;
         }
     }

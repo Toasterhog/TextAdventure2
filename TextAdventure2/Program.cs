@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TextAdventure2;
 
@@ -7,6 +6,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine("Hello, World!");
         Game GameInstance = new Game();
         GameInstance.GameStart();
     }
@@ -23,11 +23,9 @@ public class Game{
             {
                 continue;
             }
-            else if (response == "quit") //NOT IMPLEMENTED
+            else if (response == "i" || response == "inventory")
             {
-                throw new NotImplementedException("");
-                int[] arr = new int[1];
-                arr[1] = 0;
+                character.PrintInv(); 
             }
             else
             {
@@ -37,13 +35,11 @@ public class Game{
     }
     public void PressToContinue()
     {
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine("Press any key to continue...");
-        Console.ResetColor();
+        WriteColor("Press any key to continue...\n", ConsoleColor.DarkYellow);
         Console.ReadKey();
         Console.Clear();
     }
-    string AskChoise(string[] choises)
+    string AskChoice(string[] choises)
     {
         while (true)
         {
@@ -55,7 +51,8 @@ public class Game{
                     Console.Write(", ");
                 }
 
-                Console.Write($"{i+1}: {choises[i]}");
+                Console.Write($"{i+1}: ");
+                WriteColor(choises[i], ConsoleColor.Yellow);
             }
 
             Console.WriteLine(" ");
@@ -74,7 +71,7 @@ public class Game{
     bool AskYesOrNo()
     {
         string response = GetAnswer();
-        if (response == "yes")
+        if (response == "yes" || response == "ye" ||response == "y" || response == "1" || response == "hell yeah" || response == "fuck yeah" || response == "k" || response == "ok" || response == "go girl"|| response == "slay")
         {
             return true;
         }
@@ -83,11 +80,18 @@ public class Game{
             return false;
         }
     }
+
+    public static void WriteColor(string str, ConsoleColor col)
+    {
+        Console.ForegroundColor = col;
+        Console.Write(str);
+        Console.ResetColor();
+    }
     public void GameStart()
     {
-
         while (character.Location != "End")
         {
+            Console.Clear();
             if (character.Location == "StartingArea")
             {
                 StartingArea();
@@ -108,25 +112,30 @@ public class Game{
             {
                 MountainPeak();
             }
+            else if (character.Location == "Elders Recess")
+            {
+                EldersRecess();
+            }
             else if (character.Location == "Shrublands")
             {
                 ShrubLands();
             }
-            else if (character.Location == "Elders Recess")
-            {
-                EldersRecess();
-            }else if (character.Location == "Win")
+            else if (character.Location == "Win")
             {
                 Win();
-            }else if (character.Location == "Loose")
+            }
+            else if (character.Location == "Lose")
             {
-                Loose();
-            }else if (character.Location == "GameOver")
+                Lose();
+            }
+            else if (character.Location == "Game Over")
             {
                 GameOver();
-            }else 
+            }
+            else 
             {
-                Console.Error.Write($"{character.Location} is not implemented!");
+                Console.Write($"{character.Location} is not implemented!");
+                character.Location = "Lose";
             }
         }
     }
@@ -135,6 +144,8 @@ public class Game{
     {
         Console.Clear();
         Console.WriteLine("Welcome to Text Adventure!");
+        Console.WriteLine("Type your choice or its number to select it.\n"+
+                          "You can also type \"i\" or \"inventory\" at almost any time to view your inventory.");
         do
         {
             Console.WriteLine("What is your name, adventurer");
@@ -142,7 +153,6 @@ public class Game{
             Console.WriteLine($"So {character.Name} is truly your name?");
         } while (!AskYesOrNo());
 
-        Console.Clear();
         character.Location = "ancient forest";
     }
 
@@ -150,7 +160,7 @@ public class Game{
     {
         Console.Clear();
         Console.WriteLine("Welcome to the Ancient forest");
-        character.AddItemToInventory("wooden sword");
+        character.AddItemToInventory("wood sword");
         Console.WriteLine(
             "You are equipped with one wooden sword, and your task " +
             "is to slay the monster at the end of the adventure. " +
@@ -160,7 +170,7 @@ public class Game{
             "" +
             "You can only pick up one of these items."
         );
-        string item_picked_upp = AskChoise(new string[] { "knife", "key" });
+        string item_picked_upp = AskChoice(new string[] { "knife", "key" });
         character.AddItemToInventory(item_picked_upp);
         character.Location = "Mountain Cave";
         //Console.Clear();
@@ -172,7 +182,7 @@ public class Game{
         if (character.Inventory.Contains("key"))
         {
             Console.WriteLine("Where do you want to go?");
-            string choosen_place = AskChoise(new string[] { "deep cave", "mountain peak" });
+            string choosen_place = AskChoice(new string[] { "deep cave", "mountain peak" });
             if (choosen_place == "deep cave")
             {
                 character.Location = "Deep Cave";
@@ -184,9 +194,9 @@ public class Game{
         }
         else
         {
-            Console.Clear();
             Console.WriteLine("You can only go one way");
-            character.Location = ("mountain_peak");
+            character.Location = "mountain_peak";
+            PressToContinue();
         }
     }
 
@@ -198,7 +208,7 @@ public class Game{
                           "The wall opens up to a deep path down into the deep cave, you slowly take the steps down into the darkness when you find\n"+
                           "a shining sword ");
         Console.WriteLine("Do you wish to pick up the shining sword and leave your current weapon");
-        string weaponchoice = AskChoise(new string[] { "Pick up the sword", "Leave the sword and keep the wood sword." });
+        string weaponchoice = AskChoice(new string[] { "Pick up the sword", "Leave the sword and keep the wood sword" });
         if (weaponchoice == "Pick up the sword")
         {
             character.RemoveItemFromInventory("wood sword");
@@ -225,100 +235,135 @@ public class Game{
         Console.WriteLine("There is a dead Anjanath lying on the floor, its flesh made of dull gold.. rotted.\n" +
                           "You can clearly see something shiny in its hand, the shine is glistening in the sun\n" +
                           "Do approach the monster or will you walk away.");
-        string approach = AskChoise(new string[] { "Approach", "Walk Away" });
+        string approach = AskChoice(new string[] { "Approach", "Walk Away" });
+        Console.Clear();
         if (approach == "Approach")
         {
             int rolling = DnDice();
             if (rolling >= 2 && rolling <= 5)
             {
-                Console.Clear();
                 Console.WriteLine("You picked up the shiny item");
                 Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
                                   "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
                                   "It damages mobs and destroys minecarts and dropped items that touch it.");
                 character.AddItemToInventory("cactus"); // Bad item eller cursed item
                 Console.WriteLine("You move on..");
-                character.Location = "Shrublands";
             }
             else if (rolling > 5)
             {
-                Console.Clear();
                 Console.WriteLine("You just got a lot luckier than you think.\n" +
-                                  "You have picked up a Charge Blade that was left beside the monster");
+                                  "You have picked up a Charge Blade that was left beside the Anjanath");
+                character.AddItemToInventory("charge blade");
                 Console.WriteLine("You move on..");
-                character.Location = "Shrublands";
             }
             else
             {
-                Console.Clear();
-                Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckily fails");
+                Console.WriteLine("Your hands are slippery and your attempt att picking upp the item unluckily fails");
                 Console.WriteLine("You move on..");
-                character.Location = "Shrublands";
             }
         }
         else
         {
-            Console.WriteLine("So you see that it's perfectly safe loot, buy you chose to just ignore it??\n"+
+            Console.WriteLine("So you see that it's perfectly safe loot, but you chose to just ignore it??\n"+
                               "Come on what kind of devs are we if we just let you walk away from perfectly safe treasure.\n"+
                               "It's just a dead Anjanath, go ahead and take the glistening item no-one will see it.");
-            string approach2 = AskChoise( new string[] { "Try Approaching the Anjanath", "Walk Away" });
-            int rolling = DnDice();
-            if (rolling >= 2 && rolling <= 5)
+            string approach2 = AskChoice( new string[] { "Try Approaching the Anjanath", "Walk Away" });
+            if (approach2 == "Try Approaching the Anjanath")
             {
-                Console.Clear();
-                Console.WriteLine("You picked up the shiny item");
-                Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
-                                  "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
-                                  "It damages mobs and destroys minecarts and dropped items that touch it.");
-                character.AddItemToInventory("cactus"); // Bad item eller cursed item
-                Console.WriteLine("You move on..");
-                character.Location = "Shrublands";
-            }
-            else if (rolling > 5)
-            {
-                Console.Clear();
-                character.AddItemToInventory("charge blade");
-                Console.WriteLine("You just got a lot luckier than you think.\n" +
-                                  "You have picked up a Charge Blade that was left beside the monster");
-                Console.WriteLine("You move on..");
-                character.Location = "Shrublands";
-               
+                int rolling = DnDice();
+                if (rolling >= 2 && rolling <= 5)
+                {
+                    Console.Clear();
+                    Console.WriteLine("You picked up the shiny item");
+                    Console.WriteLine("when you look closer at it you notice that it's just a cactus.\n" +
+                                      "A cactus is a plant found in deserts and badlands. It grows over time and can sprout cactus flowers.\n" +
+                                      "It damages mobs and destroys minecarts and dropped items that touch it.");
+                    character.AddItemToInventory("cactus"); // Bad item eller cursed item
+                    Console.WriteLine("You move on..");
+                }
+                else if (rolling == 6)
+                {
+                    Console.Clear();
+                    character.AddItemToInventory("charge blade");
+                    Console.WriteLine("You just got a lot luckier than you think.\n" +
+                                      "You have picked up a Charge Blade that was left beside the monster");
+                    Console.WriteLine("You move on..");
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine(
+                        "You're hands are slippery and your attempt att picking upp the item unluckily fails anyway so just leave...");
+                    Console.WriteLine("You move on..");
+                }
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine("You're hands are slippery and your attempt att picking upp the item unluckily fails anyway so just leave...");
-                Console.WriteLine("You move on..");
-                character.Location = "Shrublands";
+                Console.WriteLine("You walk away successfully");
+                Console.WriteLine("There is a sheep a short distance away.\n"+
+                                  "Do you want to fight it?");
+                bool wantToFightSheep = AskYesOrNo();
+                if (wantToFightSheep)
+                {
+                    Monsters Sheep = new Monsters("Sheep", 20, 1);
+                    bool alive = FightEvent(Sheep);
+                    if (!alive)
+                    {
+                        character.Location = "Lose";
+                    }
+                }
             }
+
+        }
+
+        if (character.Location == "mountain_peak") //to avoid overriding "lose" from sheep fight
+        {
+            character.Location = "Shrublands";
+            Console.WriteLine("Walking to shrublands");
         }
         PressToContinue();
     }
 
     public void ShrubLands()
     {
-        Console.WriteLine("After the encounter with the dead Anjanath, you chose to continue your path and you find yourself in the Scrublands.");
+        Console.WriteLine("After the encounter with the dead Anjanath, you chose to continue your path and you find yourself in the shrubland.");
         Console.WriteLine("While you traverse the scraggy shrubland,\n" +
                           "you are hit by occasional gusts of gray wind,\n" +
-                          /*"Rarely they may carry a sliver of straw, sticking to your clothes for a brief moment\n"+
-                          "before reuniting with the flow of the wind in your opposite direction."+*/
-                          "stricken by the beauty of the landscape as it may have once been,\n" +
-                          "increasingly annoyed by the decision of five pebbles and a sliver of straw massaging your feet.\n" +
+                          "bitten by mosquitoes who have not seen blood in decades,\n" +
+                          "increasingly annoyed by five pebbles and a sliver of straw grinding your feet.\n" +
                           "But you are not hurt, as the experience of the shrubland is not dangerous. Not yet...");
         PressToContinue();
         Console.WriteLine("Do you feel like tripping on a rock?");
-        AskChoise(new string[]{"yes"});
+        string[] noResponses =
+        {
+            "But you do want to trip thought", "Yes", "Just say yes",
+            "It wasn't actually a question, just show that you understand.",
+            "Ok but the stones and shrubs wants you to. Will you do it for them?", "You are very bored, it could be fun ok?"
+        };
+        while (true)
+        {
+            if (!AskYesOrNo())
+            {
+                Console.WriteLine(noResponses[DnDice()]);
+            }
+            else
+            {
+                break;
+            }
+        }
         int dieRoll = DnDice();
         if (dieRoll <= 2)
         {
-            Console.WriteLine("The ground seems sparse in rocks and you give up the search. Maybe a rock will find you instead some time.");
+            Console.WriteLine("The ground seems sparse in rocks and you give up the search.\n" +
+                              "Perhaps you may stumble upon a rock another time.");
         }
         else if (dieRoll == 6)
         {
             Console.WriteLine("You feel a sense of your knees and palms staring at you in disappointment.\n" +
                               "What are you trying to do? Offer yourself to the shrubs?\n" +
-                              "They are not as round as the landscape when you see them from within.\n" +
-                              "Your jurney will continue, but at the cost of 6 health points.");
+                              "They welcome you with open branches, pointy ones.\n" +
+                              "Your journey will continue, but at the cost of 6 health points.");
             character.Health -= dieRoll;
         }
         else
@@ -342,19 +387,29 @@ public class Game{
                           $"It is time {character.Name} it's time to get monster hunting.");
                           PressToContinue();
                           Console.Clear();
-        Monsters Velkhana = new Monsters("Velkhana", 100, 5);
-        FightEvent(Velkhana);
+        Monsters Velkhana = new Monsters("Velkhana", 80, 5);
+        bool alive = FightEvent(Velkhana);
+        if (alive)
+        {
+            character.Location = "Win";
+        }
+        else
+        {
+            character.Location = "Lose";
+        }
     }
 
     public void Win()
     {
+        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"You won {character.Name}.");
         PressToContinue();
         character.Location = "Game Over";
     }
 
-    public void Loose()
+    public void Lose()
     {
+        Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine($"You lost {character.Name}.");
         PressToContinue();
         character.Location = "Game Over";
@@ -362,14 +417,15 @@ public class Game{
 
     public void GameOver()
     {
-        Console.WriteLine($"The Adventure is over. Do you want to play again?");
+        Console.WriteLine($"The Adventure is over. Do you wish to play again?");
         bool yesido = AskYesOrNo();
         if (yesido)
         {
+            character = new Character(); //reset its variables
             character.Location = "StartingArea";
             return;
         }
-        character.Location = "Quit";
+        character.Location = "End";
     }
 
     #endregion Rooms
@@ -378,41 +434,38 @@ public class Game{
     {
         Random random = new Random();
         int roll = random.Next(1, 6);
-        Console.WriteLine($"The dice rolls! {roll}"); 
+        //WriteColor($"The dice rolls! {roll}",ConsoleColor.Gray); 
         return roll;
     }
 
     public bool FightEvent(Monsters monster)
     {
         Console.WriteLine(
-            $"Welcome to a fight event! \n you are fighting a {monster.Name} with {monster.Health} health.\n" +
-            $"{monster.Name} is exited to hurt you with basedamage of {monster.Damage}.");
+            $"Welcome to a fight event! \nYou are fighting a {monster.Name} with {monster.Health} health.\n" +
+            $"{monster.Name} is exited to hurt you with damage {monster.Damage}.");
+        PressToContinue();
         while (monster.Health > 0) //rounds
         {
             Console.Clear();
-            Console.WriteLine($"{character.Name} health: {character.Health}");
-            Console.WriteLine($"{monster.Name} health: {monster.Health}");
-
+            Console.WriteLine($"{character.Name} health stands at {character.Health}");
+            Console.WriteLine($"{monster.Name} health stands at {monster.Health}");
+            
             //player turn
-            switch (AskChoise(new string[] { "attack", "run", "do a flip" }))
+            string[] fightActionChoises = new string[] { "attack", "run", "do a flip" };
+            if (character.Inventory.Contains("cactus"))
+            {
+                fightActionChoises = new string[] { "attack", "run", "do a flip", "heal" };
+            }
+            switch (AskChoice(fightActionChoises))
             {
                 case "attack":
-                    //characther.Attack(monster);
-                    int damage_dealing = character.GetDamage();
-                    Console.WriteLine(
-                        $"You suddenly, forcefully, with no respect of the well being of the {monster.Name}, \n attack it with a strength that in die terms is equivalent to {damage_dealing}.");
                     character.Attack(monster);
-                    Console.WriteLine($"monster health is now {monster.Health}.");
-                    if (monster.Health <= 0)
-                    {
-                        Console.WriteLine("monster is unhealthy.");
-                        return true;
-                    }
                     break;
                 case "run":
+                    Console.WriteLine("You are running.");
                     break;
                 case "do a flip":
-                    if (DnDice() == 6)
+                    if (DnDice() > 4)
                     {
                         Console.WriteLine(
                             $"{monster.Name} thinks you look silly. It is dying of laughter. You have won the battle.");
@@ -421,20 +474,30 @@ public class Game{
                     else
                     {
                         Console.WriteLine(
-                            "You land head first on the ground. You feel the weight of your body concentrate at your neck, forming a small insignificant crack in your spine.\n" +
-                            "Sound of thin metal colliding with ground is heard, it's your coffee thermos. You cannot live without coffee.\n"+
-                            "One bit of emotional damage is taken.");
-                        character.Hurt(1);
+                            "You land head first on the ground. You feel the weight of your body concentrate at your neck,\n" +
+                            "forming a small crack in your spine. This is a silly way to die.");
+                        PressToContinue();
+                        return false;
+                    }
+                case "heal":
+                    if (character.Inventory.Contains("cactus"))
+                    {
+                        character.Health += 15;
+                        character.RemoveItemFromInventory("cactus");
+                        Console.WriteLine("you healed 15.");
                     }
                     break;
                 default:
                     break;
             }
+
             if (monster.Health <= 0)
             {
-                Console.WriteLine($"You have killed {monster.Name}.");
+                Console.WriteLine($"You have slayed {monster.Name}.");
+                PressToContinue();
                 return true;
             }
+
             //monster turn
             int monsterDieRoll = DnDice();
             if (monsterDieRoll >= 3)
@@ -443,16 +506,17 @@ public class Game{
             }
             else
             {
-                Console.WriteLine("monster does smt else than attack.");
+                Console.WriteLine($"{monster.Name} prances and huffs at you");
             }
             if (character.Health <= 0)
             {
                 Console.WriteLine("You died.");
                 return false;
             }
-            PressToContinue(); //detta är längst ned i while
+            PressToContinue();
         }
-        return true; //cause error, need change
+        
+        return true;
     }
 }
     
